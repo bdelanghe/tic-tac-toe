@@ -1,15 +1,24 @@
-board = [{0:0,1:2,2:2},{0:1,1:2,2:2},{0:2,1:1,2:2}]
-start = True
+# board = [{0:0,1:0,2:1},{0:1,1:1,2:3},{0:1,1:1,2:3}]
+
+size = int(input('How large do you want the board?'))
+print(size)
+board = []
+for x in xrange(size):
+    row = {}
+    k = 0
+    for x in xrange(size):
+        row[k] = 0
+    print(row)
+    board.append(row)
+
 end = False
 players = {1:'X',2:'O'}
+turn = 0
 
 
 def draw(brd):
     global start
     global players
-    if start == True:
-        print('lets begin')
-    start = False
 
     for l in brd:
         row = ''
@@ -30,110 +39,64 @@ def checkwin(brd):
         playerwin[p] = 0
 
 #Check if Rows allow for win
-    for l in brd:
-        win = {}
-        for p in players:
-            win[p] = True
-        print(win)
-        rowwinx = True
-        rowwino = True
+    rowwin = {}
+    for p in players:
+        rowwin[p] = True
+        for l in brd:
+            if l[0] == p:
+                for i in l:
+                    if l[i] != p:
+                        rowwin[p] = False
+            else:
+                rowwin[p] = False
+            playerwin[p] += rowwin[p]
+    # print(rowwin)
 
-#check for row win x
-        if l[0] == 1:
-            for i in l:
-                if l[i] == 2 or l[i] == 0:
-                    rowwinx = False
-            # if rowwinx == True:
-            #     print("row win X")
-            playerwin[1] += rowwinx
-#check for row win o
-        if l[0] == 2:
-            for i in l:
-                if l[i] == 1 or l[i] == 0:
-                    rowwino = False
-            # if rowwino == True:
-            #     print("row win O")
-            playerwin[2] += rowwinx
+# Check if Column allows for win
+    colwin = {}
+    for p in players:
+        colwin[p] = True
+        col = 0
+        while col <= len(brd[0]) - 1:
+            if brd[0][col] == p:
+                for l in brd:
+                    if l[col] != p:
+                        colwin[p] = False
+            else:
+                colwin[p] = False
+            playerwin[p] += colwin[p]
+            col += 1
+    # print(colwin)
 
-#Check if Column allows for win
-#check if x is possible
-    col = 0
-    length = len(brd[0]) - 1
-
-    while col <= length:
-        colwinx = True
-        if brd[0][col] == 1:
+# Check if diangnal allows for win
+    diwin = {}
+    for p in players:
+        diwin[p] = True
+        if brd[0][0] == p:
+            di = 0
             for l in brd:
-                if l[col] == 2 or l[col] == 0:
-                    colwinx = False
-            # if colwinx == True:
-            #     print("Col win X")
-            playerwin[1] += colwinx
-        col += 1
+                if l[di] != p:
+                    diwin[p] = False
+                di += 1
+        else:
+            diwin[p] = False
+        playerwin[p] += diwin[p]
+    # print(diwin)
 
-    col = 0
-#check if o is possible
-    while col <= length:
-        colwino = True
-        if brd[0][col] == 2:
+# Check if diangnal allows for win
+    diwin2 = {}
+    for p in players:
+        diwin2[p] = True
+        if brd[0][len(brd[0]) - 1] == p:
+            di = 0
             for l in brd:
-                if l[col] == 1 or l[col] == 0:
-                    colwino = False
-            # if colwino == True:
-            #     print("Col win O")
-            playerwin[2] += colwino
-        col += 1
-
-# check diagnal win
-  # x first
-    diwinx = True
-    if brd[0][0] == 1:
-        di = 0
-        for l in brd:
-            if l[di] == 2 or l[di] == 0:
-                diwinx = False
-            di += 1
-        # if diwinx == True:
-        #     print("Downward Di win X")
-        playerwin[1] += diwinx
-
-#   o next
-    diwino = True
-    if brd[0][0] == 2:
-        di = 0
-        for l in brd:
-            if l[di] == 1 or l[di] == 0:
-                diwino = False
-            di += 1
-        # if diwino == True:
-        #     print("Downward Di win O")
-        playerwin[2] += diwino
-
-#upwards diagnal win
-    diwinx = True
-    if brd[0][length] == 1:
-        di = 0
-        for l in brd:
-            if l[length - di] == 2 or l[length - di] == 0:
-                diwinx = False
-            di += 1
-        # if diwinx == True:
-        #     print("Upward Di win X")
-        playerwin[1] += diwinx
-
-    diwino = True
-    if brd[0][length] == 2:
-        di = 0
-        for l in brd:
-            if l[length - di] == 1 or l[length - di] == 0:
-                diwino = False
-            di += 1
-        # if diwino == True:
-        #     print("Upward Di win O")
-        playerwin[2] += diwino
-
-
-
+                if l[len(brd[0]) - 1 - di] != p:
+                    diwin2[p] = False
+                di += 1
+        else:
+            diwin2[p] = False
+        playerwin[p] += diwin2[p]
+    # print(diwin2)
 
 #declare if there was a winner
     for p in players:
